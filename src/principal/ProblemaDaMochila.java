@@ -8,14 +8,23 @@ public class ProblemaDaMochila {
 
         int[][] populacao = new int[4][3];
         
-        //Atribui valores para os genomas
+        geraValoresParaOsGenomas(populacao);
+       
+        visualizaPopulacao(populacao);
+        
+        
+    }
+
+    public static void geraValoresParaOsGenomas(int[][] populacao) {
         for (int[] populacao1 : populacao) {
             for (int j = 0; j < populacao1.length; j++) {
                 populacao1[j] = geraQuantidadeObjetos(4);
             }
         }
+    }
+    
+    public static void visualizaPopulacao(int[][] populacao){
         
-        System.out.println("------------------------");
         for (int i = 0; i < populacao.length; i++) {
             System.out.println("Genoma: " + i + "\nAtributos:");
             for (int j = 0; j < populacao[i].length; j++) {
@@ -23,20 +32,8 @@ public class ProblemaDaMochila {
             }
             System.out.println("\n");
         }
-        
-        /*System.out.println("------------------------");
-        for (int i = 0; i < populacao.length; i++) {
-            System.out.println("Genoma: " + i + "\nAtributos:");
-            for (int j = 0; j < populacao[i].length; j++) {
-                System.out.print(j + " - ");
-            }
-            System.out.println("\n");
-        }*/
-
-        
-
     }
-
+    
     public static int geraQuantidadeObjetos(int quantidadeMaxObjetos) {
         Random gerador = new Random();
         //double roleta = gerador.nextDouble();
