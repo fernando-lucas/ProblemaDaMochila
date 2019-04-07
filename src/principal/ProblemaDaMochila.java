@@ -6,40 +6,36 @@ import java.util.Arrays;
 public class ProblemaDaMochila {
 
     public static void main(String[] args) {
-
+        
+        Comparador c = new Comparador(4);
         int capacidadeMochila = 20;
-
         int[][] populacao = new int[4][5];
-
+        
         geraValorParaOsGenes(populacao);
-
-        int[][] x = calculaFuncaoObjetiva(populacao);
+        populacao = calculaFuncaoObjetiva(populacao);
 
         System.out.println("Sem ordenacao...\n");
-        visualizaPopulacao(x);
+        visualizaPopulacao(populacao);
         System.out.println("\n\n");
 
-        Comparador c = new Comparador(4);
-
-        Arrays.sort(x, c);
-
-        System.out.println("Ordenado...\n");
-        visualizaPopulacao(x);
-
+        avaliaRestricoes(populacao);
+        System.out.println("Visualização após a análise de restrições:\n");
+        Arrays.sort(populacao, c);
+        visualizaPopulacao(populacao);
     }
 
     public static void geraValorParaOsGenes(int[][] populacao) {
-        for (int[] populacao1 : populacao) {
-            for (int j = 0; j < populacao1.length; j++) {
+        for (int[] cromossomo : populacao) {
+            for (int j = 0; j < cromossomo.length; j++) {
                 switch (j) {
                     case 0:
-                        populacao1[j] = geraQuantidadeObjetos(4);
+                        cromossomo[j] = geraQuantidadeObjetos(4);
                         break;
                     case 1:
-                        populacao1[j] = geraQuantidadeObjetos(2);
+                        cromossomo[j] = geraQuantidadeObjetos(2);
                         break;
                     case 2:
-                        populacao1[j] = geraQuantidadeObjetos(5);
+                        cromossomo[j] = geraQuantidadeObjetos(5);
                         break;
                 }
             }
@@ -129,7 +125,7 @@ public class ProblemaDaMochila {
                 return -1;
         }
     }
-    
+
     public static void visualizaPopulacao(int[][] populacao) {
 
         for (int i = 0; i < populacao.length; i++) {
@@ -139,6 +135,28 @@ public class ProblemaDaMochila {
             }
             System.out.println("\n");
         }
+    }
+
+    public static int[] calculaFuncaoObjetiva(int[] cromossomo) {
+        int peso = 0;
+        int valor = 0;
+        for (int j = 0; j < cromossomo.length; j++) {
+            if (j == 0) {
+                peso += cromossomo[j] * 3;
+                valor += cromossomo[j] * 40;
+            }
+            if (j == 1) {
+                peso += cromossomo[j] * 5;
+                valor += cromossomo[j] * 100;
+            }
+            if (j == 2) {
+                peso += cromossomo[j] * 2;
+                valor += cromossomo[j] * 50;
+            }
+        }
+        cromossomo[3] = peso;
+        cromossomo[4] = valor;
+        return cromossomo;
     }
 
     public static int[][] calculaFuncaoObjetiva(int[][] populacao) {
@@ -184,5 +202,54 @@ public class ProblemaDaMochila {
             retorno[i] = populacao[i];
         }
         return retorno;
+    }
+
+    public static void visualizaCromossomo(int[] cromossomo) {
+        for (int i = 0; i < cromossomo.length; i++) {
+            System.out.print(cromossomo[i] + " - ");
+        }
+        System.out.println("\n");
+    }
+
+    public static int[][] avaliaRestricoes(int[][] populacao) {
+        //int[][] novaPupulacao = populacao;
+        for (int i = 0; i < populacao.length; i++) {
+            if (populacao[i][3] > 20) {
+                System.out.println("Cromossomos que estão fora dos requisitos: " + i);
+                visualizaCromossomo(populacao[i]);
+                System.out.println("Inicio - Novo Cromossomo Criado");
+                int[] cromossomo = criaCromossomo();
+                visualizaCromossomo(cromossomo);
+                System.out.println("Fim - Novo Cromossomo Criado");
+                //novaPupulacao[i] = cromossomo;
+                populacao[i] = cromossomo;
+            }
+        }
+        //return novaPupulacao;
+        return populacao;
+    }
+
+    public static int[] criaCromossomo() {
+        int[] cromossomo = new int[5];
+
+        for (int j = 0; j < cromossomo.length; j++) {
+            switch (j) {
+                case 0:
+                    cromossomo[j] = geraQuantidadeObjetos(4);
+                    break;
+                case 1:
+                    cromossomo[j] = geraQuantidadeObjetos(2);
+                    break;
+                case 2:
+                    cromossomo[j] = geraQuantidadeObjetos(5);
+                    break;
+            }
+        }
+        calculaFuncaoObjetiva(cromossomo);
+        if(cromossomo[3] > 20) {
+           int[] novoCromossomo = criaCromossomo();
+           return novoCromossomo;
+        }
+        return cromossomo;
     }
 }
